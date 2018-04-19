@@ -1,1 +1,1 @@
-# plain-poker-gateways
+# plain-poker-gateway
