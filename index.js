@@ -5,12 +5,18 @@ const DealerGateway = require('./lib/gateways/dealerGateway');
 const LobbyGateway = require('./lib/gateways/lobbyGateway');
 const TableGateway = require('./lib/gateways/tableGateway');
 
-function Gateway(options) {
-    this.options = options;
+exports.createClientGateway = (options) => {
+    return new ClientGateway(options);
 }
 
-Gateway.prototype.client = () => {
-    return new ClientGateway();
+exports.createDealerGateway = (options) => {
+    return new DealerGateway(options);
 }
 
-module.exports = Gateway;
+exports.createLobbyGateway = (options) => {
+    return new LobbyGateway(options);
+}
+
+exports.createTableGateway = (options) => {
+    return new TableGateway(options);
+}
