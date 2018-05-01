@@ -30,7 +30,7 @@ exports.getLobbyGateway = function getLobbyGateway(protocol, options) {
   return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
 };
 
-exports.getTableAmqpGateway = function getTableAmqpGateway(protocol, options) {
+exports.getTableGateway = function getTableAmqpGateway(protocol, options) {
   if (protocol === 'amqp') {
     return new TableAmqpGateway(options);
   }
