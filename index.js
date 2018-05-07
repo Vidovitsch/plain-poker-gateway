@@ -8,19 +8,27 @@ const AmqpClient = require('./lib/services/amqpClient');
 
 let amqpClient;
 
+const checkAmqpClient = options => new Promise((resolve, reject) => {
+  if (!amqpClient) {
+    amqpClient = new AmqpClient(options);
+    amqpClient.createSharedConnectionAsync().then(() => {
+      resolve();
+    }).catch((err) => {
+      reject(err);
+    });
+  } else {
+    resolve();
+  }
+});
+
 exports.getClientGatewayAsync = function getClientGatewayAsync(protocol, options) {
   return new Promise((resolve, reject) => {
     if (protocol === 'amqp') {
-      if (!amqpClient) {
-        amqpClient = new AmqpClient(options);
-        amqpClient.createSharedConnectionAsync().then(() => {
-          resolve(new ClientAmqpGateway(amqpClient));
-        }).catch((err) => {
-          reject(err);
-        });
-      } else {
+      checkAmqpClient(options).then(() => {
         resolve(new ClientAmqpGateway(amqpClient));
-      }
+      }).catch((err) => {
+        reject(err);
+      });
     } else if (protocol === 'socket') {
       resolve(new ClientSocketGateway(options));
     } else {
@@ -32,15 +40,11 @@ exports.getClientGatewayAsync = function getClientGatewayAsync(protocol, options
 exports.getDealerGatewayAsync = function getDealerGatewayAsync(protocol, options) {
   return new Promise((resolve, reject) => {
     if (protocol === 'amqp') {
-      if (!amqpClient) {
-        amqpClient = new AmqpClient(options);
-        amqpClient.createSharedConnectionAsync().then(() => {
-          resolve(new DealerAmqpGateway(amqpClient));
-        }).catch((err) => {
-          reject(err);
-        });
-      }
-      resolve(new DealerAmqpGateway(amqpClient));
+      checkAmqpClient(options).then(() => {
+        resolve(new DealerAmqpGateway(amqpClient));
+      }).catch((err) => {
+        reject(err);
+      });
     } else {
       reject(new Error(`Protocol ${protocol} is invalid, use 'amqp' instead'`));
     }
@@ -50,15 +54,11 @@ exports.getDealerGatewayAsync = function getDealerGatewayAsync(protocol, options
 exports.getLobbyGatewayAsync = function getLobbyGatewayAsync(protocol, options) {
   return new Promise((resolve, reject) => {
     if (protocol === 'amqp') {
-      if (!amqpClient) {
-        amqpClient = new AmqpClient(options);
-        amqpClient.createSharedConnectionAsync().then(() => {
-          resolve(new LobbyAmqpGateway(amqpClient));
-        }).catch((err) => {
-          reject(err);
-        });
-      }
-      resolve(new LobbyAmqpGateway(amqpClient));
+      checkAmqpClient(options).then(() => {
+        resolve(new LobbyAmqpGateway(amqpClient));
+      }).catch((err) => {
+        reject(err);
+      });
     } else if (protocol === 'socket') {
       resolve(new LobbySocketGateway(options));
     } else {
@@ -70,16 +70,11 @@ exports.getLobbyGatewayAsync = function getLobbyGatewayAsync(protocol, options) 
 exports.getTableGatewayAsync = function getTableAmqpGatewayAsync(protocol, options) {
   return new Promise((resolve, reject) => {
     if (protocol === 'amqp') {
-      if (!amqpClient) {
-        amqpClient = new AmqpClient(options);
-        amqpClient.createSharedConnectionAsync().then(() => {
-          resolve(new TableAmqpGateway(amqpClient));
-        }).catch((err) => {
-          reject(err);
-        });
-      } else {
+      checkAmqpClient(options).then(() => {
         resolve(new TableAmqpGateway(amqpClient));
-      }
+      }).catch((err) => {
+        reject(err);
+      });
     } else {
       reject(Error(`Protocol ${protocol} is invalid, use 'amqp'`));
     }
