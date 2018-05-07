@@ -4,35 +4,91 @@ const DealerAmqpGateway = require('./lib/gateways/dealer/dealerAmqpGateway');
 const LobbyAmqpGateway = require('./lib/gateways/lobby/lobbyAmqpGateway');
 const LobbySocketGateway = require('./lib/gateways/lobby/lobbySocketGateway');
 const TableAmqpGateway = require('./lib/gateways/table/tableAmqpGateway');
+const AmqpClient = require('./lib/services/amqpClient');
 
-exports.getClientGateway = function getClientGateway(protocol, options) {
-  if (protocol === 'amqp') {
-    return new ClientAmqpGateway(options);
-  } else if (protocol === 'socket') {
-    return new ClientSocketGateway(options);
-  }
-  return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
+let amqpClient;
+
+exports.getClientGatewayAsync = function getClientGatewayAsync(protocol, options) {
+  return new Promise((resolve, reject) => {
+    if (protocol === 'amqp') {
+      if (!amqpClient) {
+        amqpClient = new AmqpClient(options);
+        amqpClient.createSharedConnectionAsync().then(() => {
+          resolve(new ClientAmqpGateway(amqpClient));
+        }).catch((err) => {
+          reject(err);
+        });
+      } else {
+        resolve(new ClientAmqpGateway(amqpClient));
+      }
+    } else if (protocol === 'socket') {
+      resolve(new ClientSocketGateway(options));
+    } else {
+      reject(new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`));
+    }
+  });
 };
 
-exports.getDealerGateway = function getDealerGateway(protocol, options) {
-  if (protocol === 'amqp') {
-    return new DealerAmqpGateway(options);
-  }
-  return new Error(`Protocol ${protocol} is invalid, use 'amqp' instead'`);
+exports.getDealerGatewayAsync = function getDealerGatewayAsync(protocol, options) {
+  return new Promise((resolve, reject) => {
+    if (protocol === 'amqp') {
+      if (!amqpClient) {
+        amqpClient = new AmqpClient(options);
+        amqpClient.createSharedConnectionAsync().then(() => {
+          resolve(new DealerAmqpGateway(amqpClient));
+        }).catch((err) => {
+          reject(err);
+        });
+      }
+      resolve(new DealerAmqpGateway(amqpClient));
+    } else {
+      reject(new Error(`Protocol ${protocol} is invalid, use 'amqp' instead'`));
+    }
+  });
 };
 
-exports.getLobbyGateway = function getLobbyGateway(protocol, options) {
-  if (protocol === 'amqp') {
-    return new LobbyAmqpGateway(options);
-  } else if (protocol === 'socket') {
-    return new LobbySocketGateway(options);
-  }
-  return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
+exports.getLobbyGatewayAsync = function getLobbyGatewayAsync(protocol, options) {
+  return new Promise((resolve, reject) => {
+    if (protocol === 'amqp') {
+      if (!amqpClient) {
+        amqpClient = new AmqpClient(options);
+        amqpClient.createSharedConnectionAsync().then(() => {
+          resolve(new LobbyAmqpGateway(amqpClient));
+        }).catch((err) => {
+          reject(err);
+        });
+      }
+      resolve(new LobbyAmqpGateway(amqpClient));
+    } else if (protocol === 'socket') {
+      resolve(new LobbySocketGateway(options));
+    } else {
+      reject(new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`));
+    }
+  });
 };
 
-exports.getTableGateway = function getTableAmqpGateway(protocol, options) {
-  if (protocol === 'amqp') {
-    return new TableAmqpGateway(options);
+exports.getTableGatewayAsync = function getTableAmqpGatewayAsync(protocol, options) {
+  return new Promise((resolve, reject) => {
+    if (protocol === 'amqp') {
+      if (!amqpClient) {
+        amqpClient = new AmqpClient(options);
+        amqpClient.createSharedConnectionAsync().then(() => {
+          resolve(new TableAmqpGateway(amqpClient));
+        }).catch((err) => {
+          reject(err);
+        });
+      } else {
+        resolve(new TableAmqpGateway(amqpClient));
+      }
+    } else {
+      reject(Error(`Protocol ${protocol} is invalid, use 'amqp'`));
+    }
+  });
+};
+
+exports.closeSharedConnection = function closeSharedConnection() {
+  if (amqpClient) {
+    return amqpClient.closeSharedConnection();
   }
-  return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
+  return new Error('amqpClient is not initialized');
 };
