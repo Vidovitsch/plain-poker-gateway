@@ -8,82 +8,57 @@ const AmqpClient = require('./lib/services/amqpClient');
 
 let amqpClient;
 
-const checkAmqpClient = options => new Promise((resolve, reject) => {
+const getAmqpClientInstance = (options) => {
   if (!amqpClient) {
     amqpClient = new AmqpClient(options);
-    amqpClient.createSharedConnectionAsync().then(() => {
+  }
+  return amqpClient;
+};
+
+module.exports = args => ({
+  getClientGateway: (protocol) => {
+    if (protocol === 'amqp') {
+      return new ClientAmqpGateway(getAmqpClientInstance(args.amqp));
+    } else if (protocol === 'ws') {
+      return new ClientSocketGateway(args.ws);
+    }
+    return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
+  },
+  getDealerGateway: (protocol) => {
+    if (protocol === 'amqp') {
+      return new DealerAmqpGateway(getAmqpClientInstance(args.amqp));
+    }
+    return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
+  },
+  getLobbyGateway: (protocol) => {
+    if (protocol === 'amqp') {
+      return new LobbyAmqpGateway(getAmqpClientInstance(args.amqp));
+    } else if (protocol === 'ws') {
+      return new LobbySocketGateway(args.ws);
+    }
+    return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
+  },
+  getTableGateway: (protocol) => {
+    if (protocol === 'amqp') {
+      return new TableAmqpGateway(getAmqpClientInstance(args.amqp));
+    }
+    return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
+  },
+  createSharedConnectionAsync: key => new Promise((resolve, reject) => {
+    getAmqpClientInstance(args.amqp).createSharedConnectionAsync(key).then(() => {
       resolve();
     }).catch((err) => {
       reject(err);
     });
-  } else {
-    resolve();
-  }
+  }),
+  createSharedChannelAsync: (key, connectionKey) => new Promise((resolve, reject) => {
+    getAmqpClientInstance(args.amqp).createSharedChannelAsync(key, connectionKey).then(() => {
+      resolve();
+    }).catch((err) => {
+      reject(err);
+    });
+  }),
+  closeSharedConnection: (key) => {
+    getAmqpClientInstance(args.amqp).closeSharedConnection(key);
+  },
 });
-
-exports.getClientGatewayAsync = function getClientGatewayAsync(protocol, options) {
-  return new Promise((resolve, reject) => {
-    if (protocol === 'amqp') {
-      checkAmqpClient(options).then(() => {
-        resolve(new ClientAmqpGateway(amqpClient));
-      }).catch((err) => {
-        reject(err);
-      });
-    } else if (protocol === 'socket') {
-      resolve(new ClientSocketGateway(options));
-    } else {
-      reject(new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`));
-    }
-  });
-};
-
-exports.getDealerGatewayAsync = function getDealerGatewayAsync(protocol, options) {
-  return new Promise((resolve, reject) => {
-    if (protocol === 'amqp') {
-      checkAmqpClient(options).then(() => {
-        resolve(new DealerAmqpGateway(amqpClient));
-      }).catch((err) => {
-        reject(err);
-      });
-    } else {
-      reject(new Error(`Protocol ${protocol} is invalid, use 'amqp' instead'`));
-    }
-  });
-};
-
-exports.getLobbyGatewayAsync = function getLobbyGatewayAsync(protocol, options) {
-  return new Promise((resolve, reject) => {
-    if (protocol === 'amqp') {
-      checkAmqpClient(options).then(() => {
-        resolve(new LobbyAmqpGateway(amqpClient));
-      }).catch((err) => {
-        reject(err);
-      });
-    } else if (protocol === 'socket') {
-      resolve(new LobbySocketGateway(options));
-    } else {
-      reject(new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`));
-    }
-  });
-};
-
-exports.getTableGatewayAsync = function getTableAmqpGatewayAsync(protocol, options) {
-  return new Promise((resolve, reject) => {
-    if (protocol === 'amqp') {
-      checkAmqpClient(options).then(() => {
-        resolve(new TableAmqpGateway(amqpClient));
-      }).catch((err) => {
-        reject(err);
-      });
-    } else {
-      reject(Error(`Protocol ${protocol} is invalid, use 'amqp'`));
-    }
-  });
-};
-
-exports.closeSharedConnection = function closeSharedConnection() {
-  if (amqpClient) {
-    return amqpClient.closeSharedConnection();
-  }
-  return new Error('amqpClient is not initialized');
-};
