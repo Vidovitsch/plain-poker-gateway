@@ -4,8 +4,9 @@ const DealerAmqpGateway = require('./lib/gateways/dealer/dealerAmqpGateway');
 const LobbyAmqpGateway = require('./lib/gateways/lobby/lobbyAmqpGateway');
 const LobbySocketGateway = require('./lib/gateways/lobby/lobbySocketGateway');
 const TableAmqpGateway = require('./lib/gateways/table/tableAmqpGateway');
-const GameAmqpGateway = require('./lib/gateways/table/gameAmqpGateway');
+const TableGameAmqpGateway = require('./lib/gateways/table/tableGameAmqpGateway');
 const ClientGameAmqpGateway = require('./lib/gateways/client/clientGameAmqpGateway');
+const DealerGameAmqpGateway = require('./lib/gateways/client/dealerGameAmqpGateway');
 const AmqpClient = require('./lib/services/amqpClient');
 
 let amqpClient;
@@ -46,15 +47,21 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
-  getGameGateway: (protocol) => {
+  getTableGameGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return new GameAmqpGateway(getAmqpClientInstance(args.amqp));
+      return new TableGameAmqpGateway(getAmqpClientInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
   getClientGameGateway: (protocol) => {
     if (protocol === 'amqp') {
       return new ClientGameAmqpGateway(getAmqpClientInstance(args.amqp));
+    }
+    return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
+  },
+  getDealerGameGateway: (protocol) => {
+    if (protocol === 'amqp') {
+      return new DealerGameAmqpGateway(getAmqpClientInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
