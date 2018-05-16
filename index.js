@@ -47,9 +47,9 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
-  getTableGameGateway: (protocol) => {
+  getTableGameGateway: (protocol, tableId) => {
     if (protocol === 'amqp') {
-      return new TableGameAmqpGateway(getAmqpClientInstance(args.amqp));
+      return new TableGameAmqpGateway(getAmqpClientInstance(args.amqp), tableId);
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -59,9 +59,9 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
-  getDealerGameGateway: (protocol) => {
+  getDealerGameGateway: (protocol, dealerId) => {
     if (protocol === 'amqp') {
-      return new DealerGameAmqpGateway(getAmqpClientInstance(args.amqp));
+      return new DealerGameAmqpGateway(getAmqpClientInstance(args.amqp), dealerId);
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
