@@ -6,7 +6,7 @@ const LobbySocketGateway = require('./lib/gateways/lobby/lobbySocketGateway');
 const TableAmqpGateway = require('./lib/gateways/table/tableAmqpGateway');
 const TableGameAmqpGateway = require('./lib/gateways/table/tableGameAmqpGateway');
 const ClientGameAmqpGateway = require('./lib/gateways/client/clientGameAmqpGateway');
-const DealerGameAmqpGateway = require('./lib/gateways/client/dealerGameAmqpGateway');
+const DealerGameAmqpGateway = require('./lib/gateways/dealer/dealerGameAmqpGateway');
 const AmqpClient = require('./lib/services/amqpClient');
 
 let amqpClient;
