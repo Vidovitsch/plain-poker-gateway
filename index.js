@@ -21,47 +21,47 @@ const getAmqpClientInstance = (options) => {
 module.exports = args => ({
   getClientGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return new ClientAmqpGateway(getAmqpClientInstance(args.amqp));
+      return ClientAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
     } else if (protocol === 'ws') {
-      return new ClientSocketGateway(args.ws);
+      return ClientSocketGateway.getInstance(args.ws);
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
   },
   getDealerGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return new DealerAmqpGateway(getAmqpClientInstance(args.amqp));
+      return DealerAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
   getLobbyGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return new LobbyAmqpGateway(getAmqpClientInstance(args.amqp));
+      return LobbyAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
     } else if (protocol === 'ws') {
-      return new LobbySocketGateway(args.ws);
+      return LobbySocketGateway.getInstance(args.ws);
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
   },
   getTableGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return new TableAmqpGateway(getAmqpClientInstance(args.amqp));
+      return TableAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
   getTableGameGateway: (protocol, tableId) => {
     if (protocol === 'amqp') {
-      return new TableGameAmqpGateway(getAmqpClientInstance(args.amqp), tableId);
+      return TableGameAmqpGateway.getInstance(getAmqpClientInstance(args.amqp), tableId);
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
   getClientGameGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return new ClientGameAmqpGateway(getAmqpClientInstance(args.amqp));
+      return ClientGameAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
   getDealerGameGateway: (protocol, dealerId) => {
     if (protocol === 'amqp') {
-      return new DealerGameAmqpGateway(getAmqpClientInstance(args.amqp), dealerId);
+      return DealerGameAmqpGateway.getInstance(getAmqpClientInstance(args.amqp), dealerId);
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
