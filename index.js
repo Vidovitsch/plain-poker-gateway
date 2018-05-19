@@ -106,7 +106,7 @@ module.exports = args => ({
    */
   getDealerGameGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return DealerGameAmqpGateway.getInstance(getAmqpClientInstance(args.amqp), dealerId);
+      return DealerGameAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
