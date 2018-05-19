@@ -9,16 +9,6 @@ const ClientGameAmqpGateway = require('./lib/gateways/client/clientGameAmqpGatew
 const DealerGameAmqpGateway = require('./lib/gateways/dealer/dealerGameAmqpGateway');
 const AmqpClient = require('./lib/services/amqpClient');
 
-// Singleton support
-let amqpClient = null;
-
-const getAmqpClientInstance = (options) => {
-  if (!amqpClient) {
-    amqpClient = new AmqpClient(options);
-  }
-  return amqpClient;
-};
-
 module.exports = args => ({
   /**
    * [getClientGateway description]
@@ -29,7 +19,7 @@ module.exports = args => ({
    */
   getClientGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return ClientAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
+      return ClientAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
     } else if (protocol === 'ws') {
       return ClientSocketGateway.getInstance(args.ws);
     }
@@ -43,7 +33,7 @@ module.exports = args => ({
    */
   getDealerGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return DealerAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
+      return DealerAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -56,7 +46,7 @@ module.exports = args => ({
    */
   getLobbyGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return LobbyAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
+      return LobbyAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
     } else if (protocol === 'ws') {
       return LobbySocketGateway.getInstance(args.ws);
     }
@@ -70,7 +60,7 @@ module.exports = args => ({
    */
   getTableGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return TableAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
+      return TableAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -82,7 +72,7 @@ module.exports = args => ({
    */
   getTableGameGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return TableGameAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
+      return TableGameAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -94,7 +84,7 @@ module.exports = args => ({
    */
   getClientGameGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return ClientGameAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
+      return ClientGameAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -106,7 +96,7 @@ module.exports = args => ({
    */
   getDealerGameGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return DealerGameAmqpGateway.getInstance(getAmqpClientInstance(args.amqp));
+      return DealerGameAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -116,7 +106,7 @@ module.exports = args => ({
    * @return {Promise}     [description]
    */
   createSharedConnectionAsync: key => new Promise((resolve, reject) => {
-    getAmqpClientInstance(args.amqp).createSharedConnectionAsync(key).then(() => {
+    AmqpClient.getInstance(args.amqp).createSharedConnectionAsync(key).then(() => {
       resolve();
     }).catch((err) => {
       reject(err);
@@ -129,7 +119,7 @@ module.exports = args => ({
    * @return {Promise}               [description]
    */
   createSharedChannelAsync: (key, connectionKey) => new Promise((resolve, reject) => {
-    getAmqpClientInstance(args.amqp).createSharedChannelAsync(key, connectionKey).then(() => {
+    AmqpClient.getInstance(args.amqp).createSharedChannelAsync(key, connectionKey).then(() => {
       resolve();
     }).catch((err) => {
       reject(err);
@@ -140,6 +130,6 @@ module.exports = args => ({
    * @param  {String} key [description]
    */
   closeSharedConnection: (key) => {
-    getAmqpClientInstance(args.amqp).closeSharedConnection(key);
+    AmqpClient.getInstance(args.amqp).closeSharedConnection(key);
   },
 });
