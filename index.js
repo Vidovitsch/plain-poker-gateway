@@ -19,9 +19,9 @@ module.exports = args => ({
    */
   getClientGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return ClientAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
+      return ClientAmqpGateway.createInstance(AmqpClient.getInstance(args.amqp));
     } else if (protocol === 'ws') {
-      return ClientSocketGateway.getInstance(args.ws);
+      return ClientSocketGateway.createInstance(args.ws);
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
   },
@@ -33,7 +33,7 @@ module.exports = args => ({
    */
   getDealerGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return DealerAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
+      return DealerAmqpGateway.createInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -46,9 +46,9 @@ module.exports = args => ({
    */
   getLobbyGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return LobbyAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
+      return LobbyAmqpGateway.createInstance(AmqpClient.getInstance(args.amqp));
     } else if (protocol === 'ws') {
-      return LobbySocketGateway.getInstance(args.ws);
+      return LobbySocketGateway.createInstance(args.ws);
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
   },
@@ -60,7 +60,7 @@ module.exports = args => ({
    */
   getTableGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return TableAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
+      return TableAmqpGateway.createInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -72,7 +72,7 @@ module.exports = args => ({
    */
   getTableGameGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return TableGameAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
+      return TableGameAmqpGateway.createInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -84,7 +84,7 @@ module.exports = args => ({
    */
   getClientGameGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return ClientGameAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
+      return ClientGameAmqpGateway.createInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
@@ -96,7 +96,7 @@ module.exports = args => ({
    */
   getDealerGameGateway: (protocol) => {
     if (protocol === 'amqp') {
-      return DealerGameAmqpGateway.getInstance(AmqpClient.getInstance(args.amqp));
+      return DealerGameAmqpGateway.createInstance(AmqpClient.getInstance(args.amqp));
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
