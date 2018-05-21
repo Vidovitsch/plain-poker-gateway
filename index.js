@@ -132,4 +132,11 @@ module.exports = args => ({
   closeSharedConnection: (key) => {
     AmqpClient.getInstance(args.amqp).closeSharedConnection(key);
   },
+  /**
+   * [closeSharedChannel description]
+   * @param  {String} key [description]
+   */
+  closeSharedChannel: (key) => {
+    AmqpClient.getInstance(args.amqp).closeSharedChannel(key);
+  },
 });
