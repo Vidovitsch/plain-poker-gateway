@@ -25,6 +25,7 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
   },
+
   /**
    * [getDealerGateway description]
    * @param  {String} protocol [description]
@@ -37,6 +38,7 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
+
   /**
    * [getLobbyGateway description]
    * @param  {String} protocol [description]
@@ -52,6 +54,7 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp' or 'socket instead'`);
   },
+
   /**
    * [getTableGateway description]
    * @param  {String} protocol [description]
@@ -64,6 +67,7 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
+
   /**
    * [getTableGameGateway description]
    * @param  {String} protocol    [description]
@@ -76,6 +80,7 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
+
   /**
    * [getClientGameGateway description]
    * @param  {String} protocol [description]
@@ -88,6 +93,7 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
+
   /**
    * [getDealerGameGateway description]
    * @param  {String} protocol [description]
@@ -100,6 +106,7 @@ module.exports = args => ({
     }
     return new Error(`Protocol ${protocol} is invalid, use 'amqp'`);
   },
+
   /**
    * [createSharedConnectionAsync description]
    * @param  {String} key [description]
@@ -112,6 +119,7 @@ module.exports = args => ({
       reject(err);
     });
   }),
+
   /**
    * [createSharedChannelAsync description]
    * @param  {String} key           [description]
@@ -125,6 +133,7 @@ module.exports = args => ({
       reject(err);
     });
   }),
+
   /**
    * [closeSharedConnection description]
    * @param  {String} key [description]
@@ -132,6 +141,7 @@ module.exports = args => ({
   closeSharedConnection: (key) => {
     AmqpClient.getInstance(args.amqp).closeSharedConnection(key);
   },
+
   /**
    * [closeSharedChannel description]
    * @param  {String} key [description]
